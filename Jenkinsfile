@@ -1,0 +1,63 @@
+pipeline {
+    agent any  // Indica que a pipeline pode executarse en calquera nodo de Jenkins dispoñible
+
+    environment {
+        // Definimos o nome do entorno virtual que se vai crear
+        VENV_DIR = '.venv'
+    }
+
+    stages {
+        stage('Clonar Repositorio') {
+            steps {
+                // Clona o repositorio onde están os teus arquivos de código
+                git 'https://github.com/usuario/repo-de-prueba.git' // Substitúe isto co teu repositorio real
+            }
+        }
+
+        stage('Configurar Entorno Virtual') {
+            steps {
+                script {
+                    // Se non existe o entorno virtual, créao
+                    if (!fileExists(VENV_DIR)) {
+                        sh 'python3 -m venv ${VENV_DIR}'
+                    }
+                    // Activamos o entorno virtual
+                    sh '. ${VENV_DIR}/bin/activate'
+                }
+            }
+        }
+
+        stage('Instalar Dependencias') {
+            steps {
+                script {
+                    // Instalamos as dependencias (por exemplo, as do requirements.txt)
+                    sh '. ${VENV_DIR}/bin/activate && pip install -r requirements.txt'
+                }
+            }
+        }
+
+        stage('Executar Test') {
+            steps {
+                script {
+                    // Executamos os tests de Python (usando pytest ou unittest, dependendo do que utilices)
+                    sh '. ${VENV_DIR}/bin/activate && pytest'
+                }
+            }
+        }
+    }
+
+    post {
+        always {
+            // Elimina o entorno virtual para limpar despois da execución
+            sh 'rm -rf ${VENV_DIR}'
+        }
+
+        success {
+            echo 'Os tests executáronse correctamente.'
+        }
+
+        failure {
+            echo 'Produciuse un erro na execución dos tests.'
+        }
+    }
+}
