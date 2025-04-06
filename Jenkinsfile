@@ -1,5 +1,10 @@
 pipeline {
-    agent any  // Indica que a pipeline pode executarse en calquera nodo de Jenkins dispoñible
+    agent {
+        docker { 
+            image 'python:3'  // Aquí especificamos que se usará a imaxe de Docker 'python:3'
+            args '-u root'    // Facultativo: pódese engadir se queres executar como root
+        }
+    }
 
     environment {
         // Definimos o nome do entorno virtual que se vai crear
@@ -9,7 +14,7 @@ pipeline {
     stages {
         stage('Clonar Repositorio') {
             steps {
-                // Clona o repositorio especificando a rama 'main'
+                // Clonamos o repositorio especificando a rama 'main'
                 git branch: 'main', url: 'https://github.com/a24alexid/jenkins.git'
             }
         }
