@@ -10,7 +10,7 @@ pipeline {
         stage('Clonar Repositorio') {
             steps {
                 // Clona o repositorio onde están os teus arquivos de código
-                git 'https://github.com/usuario/repo-de-prueba.git' // Substitúe isto co teu repositorio real
+                git 'https://github.com/a24alexid/jenkins.git' // Substitúe isto co teu repositorio real
             }
         }
 
